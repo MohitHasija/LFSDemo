@@ -5,60 +5,6 @@ from generate_fixed_width_file import INPUT_SPEC_FILE_PATH
 from spec_json import SpecJson
 from data_helper import DataReaderAndWriter
 
-class CreateCSVFromFixedWidthFileOld(object):
-    def __init__(self, input_fixed_width_file_path, input_file_path=INPUT_SPEC_FILE_PATH):
-        input_spec = json.load(open(input_file_path, 'r'))
-        self.column_names_list = input_spec["ColumnNames"]
-        self.column_offset_list = input_spec["Offsets"]
-        self.delimited_encoding = input_spec["DelimitedEncoding"]
-        self.include_header = input_spec["IncludeHeader"]
-        self.fixed_width_file_encoding = input_spec["FixedWidthEncoding"]
-        self.input_file_path = input_fixed_width_file_path
-
-    def prepare_header(self):
-        fobj = open(self.fixed_width_file_encoding, 'r')
-        if self.include_header:
-            read_first_line()
-
-    def write_header(self, fobj):
-        if self.include_header.lower() == 'true':
-            self.include_header_bool = False
-            fobj.write(','.join(self.column_names_list))
-            fobj.write('\n')
-
-    def write_data(self, fobj, input_fobj):
-        while True:
-            each_line = input_fobj.readline()
-            if not len(each_line):
-                break
-            if not self.include_header_bool:
-                self.include_header_bool = True
-                continue
-
-            data_list = []
-            #Convert each line data to a list
-            for each_column_offset in self.column_offset_list:
-                each_column_offset = int(each_column_offset)
-                data_list.append(each_line[:each_column_offset].lstrip())
-                each_line = each_line[each_column_offset:]
-            #Finally we write data to a list
-            fobj.write(','.join(data_list))
-            fobj.write('\n')
-        # Finally close the file
-        fobj.close()
-
-
-
-    def parse_and_generate(self, output_file_name):
-        # Let me assume the data is given as a list of tuples with each tuple representing a line.
-        fobj = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), output_file_name),
-                    mode="w",
-                    encoding=self.delimited_encoding
-                    )
-        input_fobj = open(self.input_file_path, mode="r", encoding=self.fixed_width_file_encoding)
-        self.include_header_bool = True
-        self.write_header(fobj)
-        self.write_data(fobj, input_fobj)
 
 class CreateCSVFromFixedWidthFile(SpecJson, DataReaderAndWriter):
 
