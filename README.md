@@ -9,3 +9,4 @@ Pass three arguments to run namely
 
 
 A demo usage of run is present in tests/ integration_tests.py
+Max_OFFSET_PERMITTED = 400
